@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>QashFlip · earn on the go</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* MOBILE-FIRST RESET & VARIABLES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: #fbfdfe;
+      color: #121826;
+      width: 100%;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    img, svg, video {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* REVEAL ANIMATION (lightweight) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.1, 1), transform 0.6s cubic-bezier(0.2, 0.9, 0.1, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* TYPOGRAPHY (fluid) */
+    h1, h2, h3 {
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* HEADER (fixed, mobile-optimized) */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 0.8rem 4%;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.02);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(130deg, #0B1E33, #1F4B8A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      cursor: pointer;
+    }
+    .logo span {
+      background: linear-gradient(130deg, #F97316, #FACC15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-primary {
+      background: #1F4B8A;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 14px -4px #1F4B8A99;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .btn-primary i { font-size: 1rem; }
+    .btn-primary:active {
+      background: #F97316;
+      transform: scale(0.96);
+      box-shadow: 0 4px 10px -2px #F97316CC;
+    }
+
+    /* HERO (mobile-first) */
+    .hero {
+      margin-top: 70px;
+      padding: 2rem 4% 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      background: linear-gradient(145deg, #ffffff 0%, #f4f9ff 100%);
+      border-bottom-left-radius: 2rem;
+      border-bottom-right-radius: 2rem;
+    }
+
+    .hero-left {
+      width: 100%;
+    }
+    .hero-badge {
+      background: #ffe8d9;
+      color: #F97316;
+      padding: 0.25rem 1rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .hero-left h1 {
+      font-size: clamp(2.2rem, 8vw, 3.8rem);
+      background: linear-gradient(145deg, #0B1E33, #1F4B8A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-left p {
+      font-size: 1rem;
+      color: #2d3a4f;
+      margin: 1rem 0 1.5rem;
+      max-width: 500px;
+    }
+
+    .hero-right {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .phone-mockup {
+      width: 220px;
+      max-width: 70%;
+      border-radius: 2.2rem;
+      background: #121212;
+      padding: 0.8rem 0.4rem;
+      box-shadow: 0 30px 50px -12px rgba(0,32,64,0.5);
+      transform: rotate(2deg);
+      transition: transform 0.2s;
+      border: 2px solid #2d3a4f;
+    }
+    .phone-mockup:active {
+      transform: rotate(0deg) scale(1.02);
+    }
+    .phone-screen {
+      background: #0a0f1a;
+      border-radius: 1.6rem;
+      aspect-ratio: 9/19;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px 8px;
+      background: linear-gradient(145deg, #101624, #1a1f2e);
+      box-shadow: inset 0 0 0 1px #2f3545;
+    }
+
+    /* BEAUTIFUL WITHDRAWAL ANIMATION INSIDE PHONE */
+    .withdraw-notification {
+      background: rgba(18, 25, 40, 0.85);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 24px;
+      padding: 16px 10px;
+      border: 1px solid rgba(249, 115, 22, 0.5);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.6), 0 0 0 2px rgba(250, 204, 21, 0.2) inset;
+      animation: gentlePulse 2.5s infinite ease-in-out;
+      margin-bottom: 8px;
+    }
+
+    @keyframes gentlePulse {
+      0% { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.6), 0 0 0 2px rgba(250, 204, 21, 0.2) inset; }
+      50% { box-shadow: 0 15px 30px -3px #F9731660, 0 0 0 3px #FACC1580 inset; }
+      100% { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.6), 0 0 0 2px rgba(250, 204, 21, 0.2) inset; }
+    }
+
+    .withdraw-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .withdraw-icon {
+      background: #F97316;
+      width: 40px;
+      height: 40px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 10px #F97316;
+    }
+    .withdraw-details {
+      flex: 1;
+    }
+    .withdraw-amount {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+    .withdraw-amount span {
+      color: #FACC15;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-left: 6px;
+    }
+    .withdraw-method {
+      font-size: 0.7rem;
+      color: #a5b4cb;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .success-badge {
+      background: #1f8b4c;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      border: 1px solid #4ade80;
+    }
+    .balance-preview {
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 8px 12px;
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+      border: 1px dashed #F97316;
+    }
+    .balance-label {
+      color: #b9c8e0;
+      font-size: 0.65rem;
+    }
+    .balance-value {
+      color: #FACC15;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .qashflip-watermark {
+      text-align: center;
+      color: #b9c8e0;
+      font-size: 0.55rem;
+      letter-spacing: 1px;
+      margin-top: 6px;
+      opacity: 0.8;
+    }
+
+    /* STATS (mobile flex wrap) */
+    .stats-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 1.2rem 0.5rem;
+      padding: 2rem 4%;
+      background: white;
+    }
+    .stat-item {
+      text-align: center;
+      flex: 1 1 40%;
+      min-width: 120px;
+    }
+    .stat-number {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 800;
+      color: #1F4B8A;
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #566b82;
+    }
+
+    /* SECTION TITLES */
+    .section-title {
+      text-align: center;
+      font-size: clamp(1.8rem, 6vw, 2.6rem);
+      padding: 0 4%;
+      margin: 2rem 0 0.5rem;
+      background: linear-gradient(145deg, #0F2B42, #1F4B8A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-sub {
+      text-align: center;
+      font-size: 1rem;
+      color: #566b82;
+      padding: 0 4%;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+
+/* ===== EARN CARDS STYLING ===== */
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+    justify-items: center;
+    padding: 1rem 4% 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.earn-card {
+    background: white;
+    border-radius: 2rem;
+    padding: 2rem 1.8rem 1.8rem 1.8rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 20px 35px -12px rgba(0, 20, 40, 0.15);
+    transition: transform 0.25s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.02);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.earn-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 40px -16px #1F4B8A80;
+}
+
+.earn-card:active {
+    transform: scale(0.98) translateY(-4px);
+}
+
+.card-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #F97316, #FACC15);
+}
+
+.card-icon {
+    font-size: 2.8rem;
+    margin-bottom: 1.2rem;
+}
+
+.earn-card h3 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #0B1E33;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+}
+
+.earn-card p {
+    color: #2d3a4f;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.8rem;
+    flex-grow: 1;
+}
+
+.card-earn-link {
+    color: #F97316;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    border-top: 1px solid #e4e9f0;
+    padding-top: 1.2rem;
+    margin-top: 0.2rem;
+    transition: gap 0.2s;
+}
+
+.card-earn-link i {
+    transition: transform 0.2s;
+}
+
+.earn-card:hover .card-earn-link i {
+    transform: translateX(6px);
+}
+
+/* Section titles (if you need them) */
+.section-title {
+    text-align: center;
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+    padding: 0 4%;
+    margin: 2rem 0 0.5rem;
+    background: linear-gradient(145deg, #0F2B42, #1F4B8A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-sub {
+    text-align: center;
+    font-size: 1rem;
+    color: #566b82;
+    padding: 0 4%;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+    /* CTA BANNER */
+    .cta-banner {
+      background: linear-gradient(125deg, #0B1E33, #173a60);
+      border-radius: 2rem;
+      margin: 1.5rem 4%;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      color: white;
+    }
+    .btn-cta {
+      background: #F97316;
+      border: none;
+      color: white;
+      padding: 1rem 1.8rem;
+      border-radius: 3rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      cursor: pointer;
+      box-shadow: 0 12px 25px -8px #F97316CC;
+      transition: all 0.15s;
+    }
+    .btn-cta:active {
+      background: #FACC15;
+      color: #0B1E33;
+      transform: scale(0.97);
+    }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      padding: 2rem 4% 3rem;
+    }
+    .testi-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .testi-card {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 1.8rem 1.5rem;
+      width: 100%;
+      max-width: 340px;
+    }
+    .testi-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 70%;
+      margin: 0 auto 1rem;
+      background: #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      border: 3px solid #F97316;
+      contain: content;
+    }
+
+    /* WHATSAPP */
+    .whatsapp-section {
+      background: linear-gradient(125deg, #0f2b3b, #1b4a3b);
+      border-radius: 2rem;
+      margin: 1rem 4% 2rem;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      color: white;
+    }
+    .wa-button {
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 3rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .wa-button:active { transform: scale(0.97); }
+
+    /* FAQ */
+    .faq-section {
+      padding: 2rem 4% 3rem;
+      background: #f4f9ff;
+      border-radius: 2rem 2rem 0 0;
+    }
+    .faq-item {
+      background: white;
+      border-radius: 1.5rem;
+      margin-bottom: 1rem;
+      padding: 0 1.2rem;
+    }
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 0;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .faq-question i { color: #F97316; transition: transform 0.2s; }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .faq-item.active .faq-answer {
+      max-height: 200px;
+      padding-bottom: 1.2rem;
+    }
+    .faq-item.active .faq-question i { transform: rotate(45deg); }
+
+    /* FOOTER */
+    .main-footer {
+      background: #0B1E33;
+      color: #cdddee;
+      padding: 2.5rem 4% 1.5rem;
+      border-radius: 2rem 2rem 0 0;
+    }
+    .footer-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .footer-col .logo { font-size: 1.8rem; background: none; -webkit-text-fill-color: white; }
+    .footer-links { list-style: none; }
+    .footer-links a { color: #b3c9e0; text-decoration: none; }
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .social-icons a {
+      background: #1e3b5a;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    .footer-bottom { text-align: center; padding-top: 2rem; font-size: 0.85rem; }
+    .affiliate-note { font-size: 0.75rem; background: #132e45; display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; }
+
+    /* small screens adjustment */
+    @media (min-width: 480px) {
+      .hero { flex-direction: row; }
+      .testi-grid { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .whatsapp-section { flex-direction: row; align-items: center; justify-content: space-between; }
+      .btn-cta, .wa-button { width: auto; }
+    }
+    /* ===== MEDIA QUERIES FOR EARN CARDS ===== */
+
+/* Tablet: 2 columns (from 640px) */
+@media screen and (min-width: 640px) {
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    .earn-card {
+        max-width: 100%;
+    }
+}
+
+/* Small desktop: 3 columns (from 960px) */
+@media screen and (min-width: 960px) {
+    .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+}
+
+/* Large screens: 4 columns (from 1280px) */
+@media screen and (min-width: 1280px) {
+    .cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Very small phones (max-width 420px) */
+@media screen and (max-width: 420px) {
+    .earn-card h3 {
+        font-size: 1.6rem;
+    }
+    .card-icon {
+        font-size: 2.4rem;
+    }
+}
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">Qash<span>Flip</span></div>
+    <a href="https://earntrix.com/user/register.php?ref=Trona10" style="text-decoration: none;"><button class="btn-primary"><i class="fas fa-bolt"></i> Join & Start Earning</button></a>
+  </nav>
+
+  <main>
+    <!-- hero with REDESIGNED phone withdraw animation -->
+    <section class="hero">
+      <div class="hero-left reveal">
+        <span class="hero-badge"><i class="fas fa-fire"></i> instant payouts</span>
+        <h1>Flip your screen into income</h1>
+        <p><i class="fas fa-check-circle" style="color:#F97316;"></i> Chat, watch, swipe — paid in real time.</p>
+        <a href="#register" style="text-decoration: none;"><button class="btn-primary" style="padding:0.8rem 2rem;font-size:1rem;"><i class="fas fa-arrow-right-to-bracket"></i> Start earning →</button></a>
+        <div style="display: flex; gap: 1.2rem; margin-top: 1.5rem; flex-wrap: wrap;">
+          <div><i class="fas fa-star" style="color: #FACC15;"></i> <strong>2,140</strong> online</div>
+          <div><i class="fas fa-globe" style="color: #1F4B8A;"></i> 152 countries</div>
+        </div>
+      </div>
+      <div class="hero-right reveal">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <!-- BEAUTIFUL WITHDRAWAL NOTIFICATION (exactly from QashFlip) -->
+            <div class="withdraw-notification">
+              <div class="withdraw-row">
+                <div class="withdraw-icon"><i class="fas fa-check"></i></div>
+                <div class="withdraw-details">
+                  <div class="withdraw-amount">$12.40 <span>USD</span></div>
+                  <div class="withdraw-method"><i class="fab fa-paypal"></i> PayPal · instant</div>
+                </div>
+              </div>
+              <div class="success-badge"><i class="fas fa-circle-check"></i> Withdrawal successful</div>
+              <div class="balance-preview">
+                <span class="balance-label">New balance</span>
+                <span class="balance-value">$23.60</span>
+              </div>
+              <div class="qashflip-watermark">QashFlip • instant payouts</div>
+            </div>
+            <!-- subtle extra shine -->
+            <div style="color: white; font-size: 0.5rem; text-align: center; opacity: 0.4; margin-top: 4px;">⬇️ pull to refresh</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- stats (counters) -->
+    <section class="stats-container">
+      <div class="stat-item reveal"><div class="stat-number counter" data-target="184500">0</div><div class="stat-label">members</div></div>
+      <div class="stat-item reveal"><div class="stat-number counter" data-target="1273">0</div><div class="stat-label">k payouts</div></div>
+      <div class="stat-item reveal"><div class="stat-number counter" data-target="4260">0</div><div class="stat-label">online now</div></div>
+      <div class="stat-item reveal"><div class="stat-number counter" data-target="152">0</div><div class="stat-label">countries</div></div>
+    </section>
+
+    <!-- EARN CARDS SECTION - CONVINCING DESCRIPTIONS -->
+<h2 class="section-title reveal">🍃 earn it your way</h2>
+<p class="section-sub reveal">Every tap, survey, or video becomes cash</p>
+
+<div class="cards-grid">
+    <!-- Card 1: Chat & earn -->
+    <div class="earn-card reveal">
+        <div class="card-accent"></div>
+        <div class="card-icon">💬</div>
+        <h3>Chat & earn</h3>
+        <p>Connect with people from around the world and get rewarded for great conversations. Every chat brings you closer to your next payout — the more you talk, the more you unlock.</p>
+        <a href="#" class="card-earn-link">Start chat <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Card 2: Paid videos -->
+    <div class="earn-card reveal">
+        <div class="card-accent"></div>
+        <div class="card-icon">📹</div>
+        <h3>Paid videos</h3>
+        <p>Enjoy watching TikTok, YouTube, and short clips? Turn your daily scroll into earnings. Finish videos and collect rewards — it's that smooth.</p>
+        <a href="#" class="card-earn-link">Watch & earn <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Card 3: Paid surveys -->
+    <div class="earn-card reveal">
+        <div class="card-accent"></div>
+        <div class="card-icon">📊</div>
+        <h3>Paid surveys</h3>
+        <p>Companies want your opinion. Share your thoughts in quick, engaging surveys and see your balance grow. Your voice matters — and it pays.</p>
+        <a href="#" class="card-earn-link">Answer now <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Card 4: Spin & win -->
+    <div class="earn-card reveal">
+        <div class="card-accent"></div>
+        <div class="card-icon">🎡</div>
+        <h3>Spin & win</h3>
+        <p>A daily dose of excitement. Spin the wheel, hit rewarding tiles, and click on ads that fill your wallet. Every spin is a fresh chance to boost your earnings.</p>
+        <a href="#" class="card-earn-link">Spin now <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Card 5: Fixtap & loans -->
+    <div class="earn-card reveal">
+        <div class="card-accent"></div>
+        <div class="card-icon">💸</div>
+        <h3>Fixtap & loans</h3>
+        <p>Just by tapping your screen you unlock micro-rewards. Plus, get access to instant small loans when you need a quick financial lift — all from your phone.</p>
+        <a href="#" class="card-earn-link">Tap & apply <i class="fas fa-arrow-right"></i></a>
+    </div>
+</div>
+
+    <!-- main affiliate CTA -->
+    <section id="register" class="cta-banner reveal">
+      <div class="cta-left"><h2>🪙 ready to flip? one tap = real cash</h2><p><i class="fas fa-check"></i> 100% free · instant loans & spins</p></div>
+      <a href="https://earntrix.com/user/register.php?ref=Trona10" target="_blank" style="text-decoration: none;"><button class="btn-cta"><i class="fas fa-message"></i> Chat with foreigners »</button></a>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials">
+      <h2 class="section-title reveal">💬 real people, real cash</h2>
+      <p class="section-sub reveal">join 184k+ members flipping their screens</p>
+      <div class="testi-grid">
+        <div class="testi-card reveal"><div class="testi-img"><img src="/images/pic1.jpg" alt=""></div><i class="fas fa-quote-left" style="color:#F97316;"></i><div class="testi-text">I made KSH.2,000 in my first week just chatting. Withdrawals instant!</div><div class="testi-name">Fatima K.</div><div class="testi-country">Nairobi, KE</div></div>
+        <div class="testi-card reveal"><div class="testi-img"><img src="/images/pic2.jpg" alt=""></div><i class="fas fa-quote-left" style="color:#F97316;"></i><div class="testi-text">Spin wheel gives me bonus every day. Loans feature is a lifesaver.</div><div class="testi-name">Michael Owens.</div><div class="testi-country">Kampala, UG</div></div>
+        <div class="testi-card reveal"><div class="testi-img"><img src="/images/pic3.jpg" alt=""></div><i class="fas fa-quote-left" style="color:#F97316;"></i><div class="testi-text">Surveys are short. I cash out $10 every two days. Love it!</div><div class="testi-name">Elena Ritah.</div><div class="testi-country">Bogotá, Congo</div></div>
+      </div>
+    </section>
+
+
+    <!-- WHATSAPP SECTION WITH CUSTOM LINK AND MESSAGE -->
+<section class="whatsapp-section reveal">
+  <div class="wa-left">
+    <h3><i class="fab fa-whatsapp"></i> Hello, need help?</h3>
+    <p>Chat with our support team directly on WhatsApp — inquiries, withdrawals, anything.</p>
+  </div>
+  <a href="https://api.whatsapp.com/send/?phone=256727856789&text=Help%20Customercare%20i%20need%20help%20with%20Qaashflux&type=phone_number&app_absent=0" target="_blank" style="text-decoration: none;">
+    <button class="wa-button"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</button>
+  </a>
+</section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+      <h2 class="section-title reveal"> frequently asked❓</h2>
+      <div class="faq-container">
+        <div class="faq-item reveal"><div class="faq-question">How do I withdraw? <i class="fas fa-plus-circle"></i></div><div class="faq-answer">Mobile money, PayPal, or crypto once you reach $5. Minimum $1 for some offers.</div></div>
+        <div class="faq-item reveal"><div class="faq-question">Is there a fee? <i class="fas fa-plus-circle"></i></div><div class="faq-answer">None. QashFlip is completely free. Just a phone & internet.</div></div>
+        <div class="faq-item reveal"><div class="faq-question">How soon can I earn? <i class="fas fa-plus-circle"></i></div><div class="faq-answer">Immediately after tapping any offer. The “Chat with foreigners” link gives instant access.</div></div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+      <div class="footer-grid">
+        <div class="footer-col"><div class="logo">Qash<span>Flip</span></div><p>Turn screen time into cash.</p><div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-tiktok"></i></a><a href="#"><i class="fab fa-whatsapp"></i></a></div></div>
+        <div class="footer-col"><h4>Quick links</h4><ul class="footer-links"><li><a href="#">Chat & earn</a></li><li><a href="#">Paid videos</a></li><li><a href="#">Spin wheel</a></li><li><a href="#">Fixtap loans</a></li></ul></div>
+        <div class="footer-col"><h4>Support</h4><ul class="footer-links"><li><a href="#">FAQ</a></li><li><a href="#">WhatsApp</a></li><li><a href="#">Terms</a></li><li><a href="#">Privacy</a></li></ul></div>
+        <div class="footer-col"><h4>Contact</h4><p><i class="fas fa-envelope"></i> support@qashflip.com</p><p><i class="fab fa-whatsapp"></i> +256 (727) 85-6789</p></div>
+      </div>
+      <div class="footer-bottom"><p>© 2026 QashFlip</p><span class="affiliate-note"><i class="fas fa-link"></i> Turn Your Phone Into A money Machine: "Chat with foreigners" & other offers</span></div>
+    </footer>
+  </main>
+
+  <script>
+    (function() {
+      const reveals = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => e.isIntersecting && e.target.classList.add('active'));
+      }, { threshold: 0.1 });
+      reveals.forEach(r => observer.observe(r));
+
+      // counters
+      const counters = document.querySelectorAll('.counter');
+      const statsSection = document.querySelector('.stats-container');
+      let counted = false;
+      function startCounters() {
+        counters.forEach(c => {
+          const target = +c.getAttribute('data-target');
+          let current = 0;
+          const update = () => {
+            const step = Math.ceil(target / 50);
+            if (current < target) { current = Math.min(current + step, target); c.innerText = current.toLocaleString(); setTimeout(update, 20); }
+            else c.innerText = target.toLocaleString();
+          };
+          update();
+        });
+      }
+      const statsObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting && !counted) { counted = true; startCounters(); } });
+      }, { threshold: 0.2 });
+      if (statsSection) statsObserver.observe(statsSection);
+
+      // FAQ toggle
+      document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => q.closest('.faq-item').classList.toggle('active'));
+      });
+
+      // affiliate links
+      const aff = "https://earntrix.com/user/register.php?ref=Trona10";
+      document.querySelectorAll('.card-earn-link, .btn-cta, .btn-primary').forEach(el => {
+        el.addEventListener('click', (e) => { if (!el.closest('.wa-button')) { e.preventDefault(); window.open(aff, '_blank'); } });
+      });
+      document.querySelector('.logo').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    })();
+  </script>
+</body>
+</html>
